@@ -1,0 +1,37 @@
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=development
+      - MONGO_URI=mongodb://mongo:27017/authdb
+      - JWT_SECRET=e65b9fda5d26c925b6eb16fc3ab31d7643f303635c921758fcfe5371bdb4f6c5
+      - MAILTRAP_HOST=sandbox.smtp.mailtrap.io
+      - MAILTRAP_PORT=2525
+      - MAILTRAP_USER=2db55233024542
+      - MAILTRAP_PASS=cb35ed13a20b85
+    depends_on:
+      - mongo
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+  mongo:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb_data:/data/db
+volumes:
+  mongodb_data:
